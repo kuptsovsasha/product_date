@@ -1,0 +1,1 @@
+web: gunicorn product_date.wsgi --log-file -
