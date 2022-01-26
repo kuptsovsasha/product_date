@@ -4,9 +4,16 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.generic.list import ListView
 # Create your views here.
-from .models import Item
+from utils.mail import send_email
+from .models import Item, Shop
 import datetime
 import pandas as pd
+
+
+
+
+
+
 
 
 def item_list(request):
@@ -33,7 +40,6 @@ def search_products(request):
         data_form = (dict(data.lists()))
         search_item = []
         value = []
-        print(data_form)
         if data_form['date'] != ['']:
             search_item.append(Item.objects.filter(expire_date=data["date"]))
         elif data_form['barcode'] != ['']:
@@ -44,7 +50,6 @@ def search_products(request):
             raise ValueError("Введіть критерій пошуку")
         for i in search_item:
             value.append(i.values())
-        print(search_item)
     return render(request, "products/item_list.html", {'value':value[0],})
 
 
@@ -59,10 +64,9 @@ def add_products(request):
         for key, value in zip(data_form, data_form.values()):
             value = str(value)[2:-2]
             new_dict[key] = value
-
         if (data_form['date'] != ['']) and (data_form['barcode'] != ['']) and (data_form['CO_code']) and (data_form['shop'] != ['']) \
                 and (data_form['department'] != [''] and (data_form['name'] != [''])):
-            new_item = Item.objects.create(name=new_dict['name'], barcode=new_dict['barcode'], expire_date=new_dict['date'], shop=new_dict['shop'],
+            new_item = Item.objects.create(name=new_dict['name'], barcode=new_dict['barcode'], expire_date=new_dict['date'], shop=Shop.objects.get(name=new_dict['shop']),
                                            department=new_dict['department'], CO_code=new_dict['CO_code'])
 
         else:
@@ -109,10 +113,10 @@ class StartList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        data_shop = Item.objects.values_list("shop")
+        data_shop = Item.objects.values_list('shop')
         shop =[]
         for item in data_shop:
-            item = str(item)[2:-3]
+            item = str(item)[1:-2]
             if item not in shop:
                 shop.append(item)
             else:
@@ -128,3 +132,5 @@ class StartList(ListView):
                 continue
         context['department'] = department
         return context
+
+

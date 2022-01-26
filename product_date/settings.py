@@ -132,3 +132,11 @@ STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
 import django_heroku
 django_heroku.settings(locals())
+
+#email sender
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'kuptsovsasha@gmail.com'
+EMAIL_HOST_PASSWORD = 'dragnir2302'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

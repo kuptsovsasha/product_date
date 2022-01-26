@@ -18,3 +18,5 @@ SQLAlchemy==1.4.27
 sqlparse==0.4.2
 whitenoise==5.3.0
 XlsxWriter==3.0.2
+
+pdfkit~=1.0.0
